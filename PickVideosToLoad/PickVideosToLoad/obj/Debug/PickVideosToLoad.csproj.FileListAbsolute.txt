@@ -1,0 +1,14 @@
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\bin\Debug\PickVideosToLoad.exe.config
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.csprojResolveAssemblyReference.cache
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\MainWindow.g.cs
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\App.g.cs
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad_MarkupCompile.cache
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad_MarkupCompile.lref
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\bin\Debug\PickVideosToLoad.exe
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\bin\Debug\PickVideosToLoad.pdb
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\MainWindow.baml
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.g.resources
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.Properties.Resources.resources
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.csproj.GenerateResource.Cache
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.exe
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.pdb

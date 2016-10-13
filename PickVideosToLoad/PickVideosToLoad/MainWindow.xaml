@@ -1,0 +1,22 @@
+﻿<Window x:Class="PickVideosToLoad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PickVideosToLoad"
+        mc:Ignorable="d"
+        Title="Pick Videos to Load" 
+        Height="350" Width="525" 
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="511*"/>
+            <ColumnDefinition Width="6*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="btnSetSourceFolder" Content="Set source folder" HorizontalAlignment="Left" Margin="20,18,0,0" VerticalAlignment="Top" Width="114" Click="btnSetSourceFolder_Click" Height="20"/>
+        <Label x:Name="lblSourceFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,38,0,0" VerticalAlignment="Top" Width="457" Height="26"/>
+        <Button x:Name="btnSetDestinationFolder" Content="Set destination folder" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="114" Click="btnSetDestinationFolder_Click"/>
+        <Label x:Name="lblDestinationFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="457"/>
+
+    </Grid>
+</Window>
