@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,5 +49,37 @@ namespace PickVideosToLoad
             lblDestinationFolder.Content = string.Empty;
         }
 
+        private void btnTransfer_Click(object sender, RoutedEventArgs e)
+        {
+            Utilities.FilesAndFolders faf = new FilesAndFolders();
+
+            if (chkMove.IsChecked == true)
+            {
+                //faf.MoveFiles(lblSourceFolder.Content.ToString(), lblDestinationFolder.Content.ToString());
+            }
+            else
+            {
+                List<string> foldersIgnore = new List<string>(new string[] { "_DA SMISTARE" });
+                List<string> extensionsToTransfer = new List<string>(new string[] { "mp4", "avi", "mkv", "m4v" });
+                List<string> extensionsToIgnore = new List<string>(new string[] { "pdf", "txt", "mp3" });
+
+                double megasFromGigas = double.Parse(txtGigas.Text, CultureInfo.InvariantCulture.NumberFormat) * 1024.0;
+                float megas = float.Parse(txtMegabits.Text, CultureInfo.InvariantCulture.NumberFormat);
+
+                float maxMegabytesAllowed = Convert.ToSingle(megasFromGigas) + megas;
+
+                bool moveAndDeleteFromSource;
+                if (chkMove.IsChecked == true)
+                {
+                    moveAndDeleteFromSource = true;
+                }
+                else
+                {
+                    moveAndDeleteFromSource = false;
+                }
+
+                faf.CopyRandomFiles(lblSourceFolder.Content.ToString(), lblDestinationFolder.Content.ToString(), moveAndDeleteFromSource, foldersIgnore, extensionsToTransfer, extensionsToIgnore, maxMegabytesAllowed);
+            }
+        }
     }
 }

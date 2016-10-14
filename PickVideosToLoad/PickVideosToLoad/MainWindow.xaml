@@ -6,17 +6,26 @@
         xmlns:local="clr-namespace:PickVideosToLoad"
         mc:Ignorable="d"
         Title="Pick Videos to Load" 
-        Height="350" Width="525" 
+        Height="420.553" Width="511.166" 
         Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="511*"/>
+            <ColumnDefinition Width="82*"/>
+            <ColumnDefinition Width="429*"/>
             <ColumnDefinition Width="6*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="btnSetSourceFolder" Content="Set source folder" HorizontalAlignment="Left" Margin="20,18,0,0" VerticalAlignment="Top" Width="114" Click="btnSetSourceFolder_Click" Height="20"/>
-        <Label x:Name="lblSourceFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,38,0,0" VerticalAlignment="Top" Width="457" Height="26"/>
-        <Button x:Name="btnSetDestinationFolder" Content="Set destination folder" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="114" Click="btnSetDestinationFolder_Click"/>
-        <Label x:Name="lblDestinationFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="457"/>
+        <Button x:Name="btnSetSourceFolder" Content="Set source folder" HorizontalAlignment="Left" Margin="20,18,0,0" VerticalAlignment="Top" Width="114" Click="btnSetSourceFolder_Click" Height="20" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblSourceFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,38,0,0" VerticalAlignment="Top" Width="457" Height="26" Grid.ColumnSpan="2"/>
+        <Button x:Name="btnSetDestinationFolder" Content="Set destination folder" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="114" Click="btnSetDestinationFolder_Click" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblDestinationFolder" Background="AliceBlue" Content="Label" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="457" Grid.ColumnSpan="2"/>
+        <Button x:Name="btnTransfer" Content="Transfer" HorizontalAlignment="Left" Margin="20,309,0,0" VerticalAlignment="Top" Width="75" Grid.ColumnSpan="2" Click="btnTransfer_Click"/>
+        <CheckBox x:Name="chkMove" Content="Move files (delete from source)" HorizontalAlignment="Left" Margin="20,289,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <ProgressBar x:Name="objProgressBar" HorizontalAlignment="Left" Height="31" Margin="20,334,0,0" VerticalAlignment="Top" Width="457" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txtGigas" HorizontalAlignment="Left" Height="23" Margin="28,196,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="79" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblSpace" Content="How much space is available?" HorizontalAlignment="Left" Margin="20,165,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="184"/>
+        <Label x:Name="lblGigas" Content="Gigas" Grid.Column="1" HorizontalAlignment="Left" Margin="27,191,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtMegabits" HorizontalAlignment="Left" Height="23" Margin="28,227,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="79" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblMegabits" Content="Megabits" Grid.Column="1" HorizontalAlignment="Left" Margin="27,222,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

@@ -55,6 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BusinessLogic\BusinessLogic.cs" />
+    <Compile Include="Utilities\FilesAndFolders\FilesAndFolders.cs" />
+    <Compile Include="Utilities\FilesAndFolders\FileSizesConverter.cs" />
+    <Compile Include="Utilities\Random\RandomUtility.cs" />
     <Compile Include="Utilities\WpfClassicDialogs\WpfClassicDialogs.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
