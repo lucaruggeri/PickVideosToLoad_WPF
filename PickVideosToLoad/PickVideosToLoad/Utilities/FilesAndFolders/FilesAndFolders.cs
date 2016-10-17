@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 
 using System.IO;
+using PickVideosToLoad.Model;
 
 namespace Utilities
 {
@@ -14,16 +15,6 @@ namespace Utilities
 
         public FilesAndFolders()
         {
-        }
-
-        public void CopyFiles(string sourceFolder, string destinationFolder, List<string> foldersToIgnore, List<string> extensionsToTransfer, List<string> extensionsToIgnore)
-        {
-            TransferFiles(sourceFolder, destinationFolder, false, foldersToIgnore, extensionsToTransfer, extensionsToIgnore);
-        }
-
-        public void MoveFiles(string sourceFolder, string destinationFolder, List<string> foldersToIgnore, List<string> extensionsToTransfer, List<string> extensionsToIgnore)
-        {
-            TransferFiles(sourceFolder, destinationFolder, true, foldersToIgnore, extensionsToTransfer, extensionsToIgnore);
         }
 
         private string GetFileExtension(string fileName)
@@ -37,16 +28,16 @@ namespace Utilities
             return fileNameElements[lastEmelentIndex];
         }
 
-        public void CopyRandomFiles(string sourceFolder, string destinationFolder, bool moveAndDeleteFromSource, List<string> foldersToIgnore, List<string> extensionsToTransfer, List<string> extensionsToIgnore, float maxMegabytesAllowed)
+        public void TransferRandomFiles(FilesTransferConfiguration config)
         {
             filesToCopy = new List<MyFileInfo>();
 
             //save all infos
-            SaveFilesInfo(sourceFolder, destinationFolder, foldersToIgnore, extensionsToTransfer, extensionsToIgnore);
+            SaveFilesInfo(config.sourceFolder, config.destinationFolder, config.foldersToIgnore, config.extensionsToTransfer, config.extensionsToIgnore);
 
             //filter wanted file infos
             float totalMegabytes = 0;
-            while ((totalMegabytes < maxMegabytesAllowed) && (filesInfoList.Count() > 0))
+            while ((totalMegabytes < config.maxMegabytesAllowed) && (filesInfoList.Count() > 0))
             {
                 //select random file
                 int index = RandomUtility.GenerateRandomNumber(0, filesInfoList.Count() - 1);
@@ -69,24 +60,24 @@ namespace Utilities
             {
                 foreach(var fileToCopy in filesToCopy)
                 {
-                    if (moveAndDeleteFromSource)
+                    if (config.moveAndDeleteFromSource)
                     {
                         //move
-                        File.Move(fileToCopy.PathAndName, destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name));
+                        File.Move(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name));
                     }
                     else
                     {
                         //copy
-                        File.Copy(fileToCopy.PathAndName, destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name), true);
+                        File.Copy(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name), true);
                     }
                 }
             }
         }
 
-        private void TransferFiles(string sourceFolder, string destinationFolder, bool moveAndDeleteFromSource, List<string> foldersToIgnore, List<string> extensionsToTransfer, List<string> extensionsToIgnore)
+        private void TransferFiles(FilesTransferConfiguration config)
         {
-            List<string> rootFiles = Directory.GetFiles(sourceFolder).ToList();
-            List<string> folders = Directory.GetDirectories(sourceFolder).ToList();
+            List<string> rootFiles = Directory.GetFiles(config.sourceFolder).ToList();
+            List<string> folders = Directory.GetDirectories(config.sourceFolder).ToList();
 
             //TODO - add folders ignore filters
 
@@ -98,20 +89,20 @@ namespace Utilities
                     foreach (string file in rootFiles)
                     {
                         //contains extension
-                        if (extensionsToTransfer.Contains(GetFileExtension(file)))
+                        if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
                         {
                             //doesn't contains extension
-                            if (!extensionsToIgnore.Contains(GetFileExtension(file)))
+                            if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
                             {
-                                if (moveAndDeleteFromSource)
+                                if (config.moveAndDeleteFromSource)
                                 {
                                     //move
-                                    File.Move(file, destinationFolder + "\\" + Path.GetFileName(file));
+                                    File.Move(file, config.destinationFolder + "\\" + Path.GetFileName(file));
                                 }
                                 else
                                 {
                                     //copy
-                                    File.Copy(file, destinationFolder + "\\" + Path.GetFileName(file), true);
+                                    File.Copy(file, config.destinationFolder + "\\" + Path.GetFileName(file), true);
                                 }
                             }
                         }
@@ -131,20 +122,20 @@ namespace Utilities
                         foreach (string file in files)
                         {
                             //contains extension
-                            if (extensionsToTransfer.Contains(GetFileExtension(file)))
+                            if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
                             {
                                 //doesn't contains extension
-                                if (!extensionsToIgnore.Contains(GetFileExtension(file)))
+                                if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
                                 {
-                                    if (moveAndDeleteFromSource)
+                                    if (config.moveAndDeleteFromSource)
                                     {
                                         //move
-                                        File.Move(file, destinationFolder + "\\" + Path.GetFileName(file));
+                                        File.Move(file, config.destinationFolder + "\\" + Path.GetFileName(file));
                                     }
                                     else
                                     {
                                         //copy
-                                        File.Copy(file, destinationFolder + "\\" + Path.GetFileName(file), true);
+                                        File.Copy(file, config.destinationFolder + "\\" + Path.GetFileName(file), true);
                                     }
                                 }
                             }
@@ -257,5 +248,6 @@ namespace Utilities
 
         public string PathAndName { get; set; }
     }
+
 }
 
