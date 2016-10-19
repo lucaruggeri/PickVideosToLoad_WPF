@@ -11,3 +11,4 @@ C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVid
 C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.pdb
 C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\Views\MainWindow.g.cs
 C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\Views\MainWindow.baml
+C:\SOFTWARE\PickVideosToLoad (WPF)\PickVideosToLoad_WPF\PickVideosToLoad\PickVideosToLoad\obj\Debug\PickVideosToLoad.csprojResolveAssemblyReference.cache

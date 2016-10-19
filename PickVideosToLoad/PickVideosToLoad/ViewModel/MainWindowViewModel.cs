@@ -17,7 +17,7 @@ namespace PickVideosToLoad.ViewModel
         {
             myConfig = new FilesTransferConfiguration();
             myConfig.destinationFolder = @"C:\Users\Luca\Desktop\TEST COPY";
-            myConfig.sourceFolder = @"G:\VIDEOS\Shark Tank Season 1-5\Shark.Tank.Season.5";
+            myConfig.sourceFolder = @"G:\VIDEOS\extras\Extras Season 1\1x01";
             myConfig.foldersToIgnore = new List<string>(new string[] { "_DA SMISTARE" });
             myConfig.extensionsToTransfer = new List<string>(new string[] { "mp4", "avi", "mkv", "m4v" });
             myConfig.extensionsToIgnore = new List<string>(new string[] { "pdf", "txt", "mp3" });

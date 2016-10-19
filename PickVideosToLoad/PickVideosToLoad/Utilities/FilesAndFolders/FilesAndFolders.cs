@@ -12,6 +12,7 @@ namespace Utilities
     {
         public List<MyFileInfo> filesInfoList;
         public List<MyFileInfo> filesToCopy;
+        public int existingFilesCopies;
 
         public FilesAndFolders()
         {
@@ -28,12 +29,18 @@ namespace Utilities
             return fileNameElements[lastEmelentIndex];
         }
 
+
+        //TODO cercare nelle folder in modo recursivo
+        //TODO modalità preleva il primo video sulla cartella (per vedere puntate in ordine)
+
         public void TransferRandomFiles(FilesTransferConfiguration config)
         {
             filesToCopy = new List<MyFileInfo>();
+            existingFilesCopies = 0;
 
             //save all infos
-            SaveFilesInfo(config.sourceFolder, config.destinationFolder, config.foldersToIgnore, config.extensionsToTransfer, config.extensionsToIgnore);
+            filesInfoList = new List<MyFileInfo>();
+            SaveFilesInfo(config);
 
             //filter wanted file infos
             float totalMegabytes = 0;
@@ -63,15 +70,36 @@ namespace Utilities
                     if (config.moveAndDeleteFromSource)
                     {
                         //move
-                        File.Move(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name));
+                        if (!File.Exists(config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name)))
+                        {
+                            File.Move(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name));
+                        }
+                        else
+                        {
+                            existingFilesCopies = existingFilesCopies + 1;
+                            File.Move(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(CreateCopyName(fileToCopy.Name, existingFilesCopies)));
+                        }
                     }
                     else
                     {
                         //copy
-                        File.Copy(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name), true);
+                        if (!File.Exists(config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name)))
+                        {
+                            File.Copy(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(fileToCopy.Name));
+                        }
+                        else
+                        {
+                            existingFilesCopies = existingFilesCopies + 1;
+                            File.Copy(fileToCopy.PathAndName, config.destinationFolder + "\\" + Path.GetFileName(CreateCopyName(fileToCopy.Name, existingFilesCopies)));
+                        }
                     }
                 }
             }
+        }
+
+        private string CreateCopyName(string fileName, int index)
+        {
+            return Path.GetFileNameWithoutExtension(fileName) + "_" + existingFilesCopies.ToString() + "." + GetFileExtension(fileName);            
         }
 
         private void TransferFiles(FilesTransferConfiguration config)
@@ -145,52 +173,47 @@ namespace Utilities
             }
         }
 
-        private void SaveFilesInfo(string sourceFolder, string destinationFolder, List<string> foldersToIgnore, List<string> extensionsToTransfer, List<string> extensionsToIgnore)
+        private void SaveFilesInfo(FilesTransferConfiguration config)
         {
-            filesInfoList = new List<MyFileInfo>();
+            SaveRootInfo(config);
+            SaveFoldersInfo(config);
+        }
 
-            List<string> rootFiles = Directory.GetFiles(sourceFolder).ToList();
-            List<string> folders = Directory.GetDirectories(sourceFolder).ToList();
-
-            //root
-            if (rootFiles != null)
+        private void SaveRootInfo(FilesTransferConfiguration config)
+        {
+            foreach (string file in Directory.GetFiles(config.sourceFolder))
             {
-                if (rootFiles.Count() > 0)
+                //contains extension
+                if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
                 {
-                    foreach (string file in rootFiles)
+                    //doesn't contains extension
+                    if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
                     {
-                        //contains extension
-                        if (extensionsToTransfer.Contains(GetFileExtension(file)))
-                        {
-                            //doesn't contains extension
-                            if (!extensionsToIgnore.Contains(GetFileExtension(file)))
-                            {
-                                FileInfo f = new FileInfo(file);
-                                long fileLenght = f.Length;
+                        FileInfo f = new FileInfo(file);
+                        long fileLenght = f.Length;
 
-                                filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
-                            }
-                        }
+                        filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
                     }
                 }
             }
+        }
 
-            //subfolders
-            if (folders != null)
+        private void SaveFoldersInfo(FilesTransferConfiguration config)
+        {
+            if (Directory.GetDirectories(config.sourceFolder) != null)
             {
-                if (folders.Count() > 0)
+                if (Directory.GetDirectories(config.sourceFolder).Count() > 0)
                 {
-                    foreach (string folder in folders)
+                    foreach (string folder in Directory.GetDirectories(config.sourceFolder))
                     {
-                        List<string> files = Directory.GetFiles(folder).ToList();
 
-                        foreach (string file in files)
+                        foreach (string file in Directory.GetFiles(folder))
                         {
                             //contains extension
-                            if (extensionsToTransfer.Contains(GetFileExtension(file)))
+                            if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
                             {
                                 //doesn't contains extension
-                                if (!extensionsToIgnore.Contains(GetFileExtension(file)))
+                                if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
                                 {
                                     FileInfo f = new FileInfo(file);
                                     long fileLenght = f.Length;
@@ -199,37 +222,13 @@ namespace Utilities
                                 }
                             }
                         }
+
+                        //recursive call
+                        config.sourceFolder = folder;
+                        SaveFilesInfo(config);
                     }
                 }
             }
-        }
-
-        public List<string> SearchForLocalFiles(string path, string extensionsToFind)
-        {
-            List<string> filesFound = new List<string>();
-            List<string> folders = Directory.GetDirectories(path).ToList();
-
-            if (folders != null)
-            {
-                if (folders.Count() > 0)
-                {
-                    foreach(string folder in folders)
-                    {
-                        List<string> files = Directory.GetFiles(folder).ToList();
-
-                        foreach (string file in files)
-                        {
-                            string extension = file.Substring(file.Length - 3);
-
-                            if (extensionsToFind.Contains(extension))
-                            {
-                                filesFound.Add(Path.GetFileNameWithoutExtension(file));
-                            }
-                        }
-                    }
-                }
-            }
-            return filesFound;
         }
     }
 
