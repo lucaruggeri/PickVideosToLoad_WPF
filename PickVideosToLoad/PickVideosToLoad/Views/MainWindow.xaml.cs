@@ -66,5 +66,9 @@ namespace PickVideosToLoad
 
         }
 
+        private void chkFirstFile_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

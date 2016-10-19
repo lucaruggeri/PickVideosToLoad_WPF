@@ -22,6 +22,7 @@ namespace PickVideosToLoad.ViewModel
             myConfig.extensionsToTransfer = new List<string>(new string[] { "mp4", "avi", "mkv", "m4v" });
             myConfig.extensionsToIgnore = new List<string>(new string[] { "pdf", "txt", "mp3" });
             myConfig.moveAndDeleteFromSource = false;
+            myConfig.startFromTheFirstFile = true;
             myConfig.gigas = 1;
             myConfig.megas = 500;
         }

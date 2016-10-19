@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PickVideosToLoad"
-        xmlns:ViewModel="clr-namespace:PickVideosToLoad.ViewModel" x:Class="PickVideosToLoad.MainWindow"
+        xmlns:ViewModel="clr-namespace:PickVideosToLoad.ViewModel" 
+        x:Class="PickVideosToLoad.MainWindow"
         mc:Ignorable="d"
         Title="Pick Videos to Load" 
         Height="420.553" Width="511.166" 
@@ -23,7 +24,8 @@
         <Button x:Name="btnSetDestinationFolder" Content="Set destination folder" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="114" Click="btnSetDestinationFolder_Click" Grid.ColumnSpan="2"/>
         <Label x:Name="lblDestinationFolder" Background="AliceBlue" Content="{Binding myConfig.destinationFolder, Mode=TwoWay}" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" Width="457" Grid.ColumnSpan="2"/>
         <Button x:Name="btnTransfer" Content="Transfer" HorizontalAlignment="Left" Margin="20,309,0,0" VerticalAlignment="Top" Width="75" Grid.ColumnSpan="2" Click="btnTransfer_Click"/>
-        <CheckBox x:Name="chkMove" IsThreeState="False" Content="Move files (delete from source)" HorizontalAlignment="Left" Margin="20,289,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="{Binding myConfig.moveAndDeleteFromSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="chkMove_Checked"/>
+        <CheckBox x:Name="chkFirstFile" IsThreeState="False" Content="Start from the first file (more ordered picking)" HorizontalAlignment="Left" Margin="20,289,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="{Binding myConfig.startFromTheFirstFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="chkFirstFile_Checked"/>
+        <CheckBox x:Name="chkMove" IsThreeState="False" Content="Move files (delete from source)" HorizontalAlignment="Left" Margin="20,269,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="{Binding myConfig.moveAndDeleteFromSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Checked="chkMove_Checked"/>
         <ProgressBar x:Name="objProgressBar" HorizontalAlignment="Left" Height="31" Margin="20,334,0,0" VerticalAlignment="Top" Width="457" Grid.ColumnSpan="2"/>
         <TextBox x:Name="txtGigas" HorizontalAlignment="Left" Height="23" Margin="28,196,0,0" TextWrapping="Wrap" Text="{Binding myConfig.gigas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="79" Grid.ColumnSpan="2" TextChanged="txtGigas_TextChanged"/>
         <Label x:Name="lblSpace" Content="How much space is available?" HorizontalAlignment="Left" Margin="20,165,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="184"/>

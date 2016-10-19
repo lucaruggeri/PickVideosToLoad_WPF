@@ -10,36 +10,26 @@ namespace Utilities
 {
     public class FilesAndFolders
     {
+        //TODO modalità preleva il primo video sulla cartella (per vedere puntate in ordine)
+
         public List<MyFileInfo> filesInfoList;
         public List<MyFileInfo> filesToCopy;
         public int existingFilesCopies;
+        public int filesNumberPerLoop;
 
         public FilesAndFolders()
         {
         }
 
-        private string GetFileExtension(string fileName)
-        {
-            fileName = Path.GetFileName(fileName);
-            string[] fileNameElements = fileName.Split('.');
-
-            //actual last element (ignores the dots ('.') in the file name)
-            int lastEmelentIndex = fileNameElements.Length - 1;
-
-            return fileNameElements[lastEmelentIndex];
-        }
-
-
-        //TODO cercare nelle folder in modo recursivo
-        //TODO modalità preleva il primo video sulla cartella (per vedere puntate in ordine)
-
+        #region public methods
         public void TransferRandomFiles(FilesTransferConfiguration config)
         {
+            filesInfoList = new List<MyFileInfo>();
             filesToCopy = new List<MyFileInfo>();
             existingFilesCopies = 0;
+            filesNumberPerLoop = 0;
 
             //save all infos
-            filesInfoList = new List<MyFileInfo>();
             SaveFilesInfo(config);
 
             //filter wanted file infos
@@ -65,7 +55,7 @@ namespace Utilities
             //copy files
             if (filesToCopy.Count() > 0)
             {
-                foreach(var fileToCopy in filesToCopy)
+                foreach (var fileToCopy in filesToCopy)
                 {
                     if (config.moveAndDeleteFromSource)
                     {
@@ -96,10 +86,23 @@ namespace Utilities
                 }
             }
         }
+        #endregion
+
+        #region private methods
+        private string GetFileExtension(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            string[] fileNameElements = fileName.Split('.');
+
+            //actual last element (ignores the dots ('.') in the file name)
+            int lastEmelentIndex = fileNameElements.Length - 1;
+
+            return fileNameElements[lastEmelentIndex];
+        }
 
         private string CreateCopyName(string fileName, int index)
         {
-            return Path.GetFileNameWithoutExtension(fileName) + "_" + existingFilesCopies.ToString() + "." + GetFileExtension(fileName);            
+            return Path.GetFileNameWithoutExtension(fileName) + "_" + existingFilesCopies.ToString() + "." + GetFileExtension(fileName);
         }
 
         private void TransferFiles(FilesTransferConfiguration config)
@@ -176,7 +179,18 @@ namespace Utilities
         private void SaveFilesInfo(FilesTransferConfiguration config)
         {
             SaveRootInfo(config);
-            SaveFoldersInfo(config);
+
+            if (config.startFromTheFirstFile == true)
+            {
+                if (filesNumberPerLoop < 1)
+                {
+                    SaveFoldersInfo(config);
+                }
+            }
+            else
+            {
+                SaveFoldersInfo(config);
+            }
         }
 
         private void SaveRootInfo(FilesTransferConfiguration config)
@@ -193,6 +207,16 @@ namespace Utilities
                         long fileLenght = f.Length;
 
                         filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
+                        filesNumberPerLoop = filesNumberPerLoop + 1;
+
+                        //exits if it must start from the first file
+                        if (config.startFromTheFirstFile == true)
+                        {
+                            if (filesNumberPerLoop > 0)
+                            {
+                                return;
+                            }
+                        }
                     }
                 }
             }
@@ -219,6 +243,16 @@ namespace Utilities
                                     long fileLenght = f.Length;
 
                                     filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
+                                    filesNumberPerLoop = filesNumberPerLoop + 1;
+
+                                    //exits if it must start from the first file
+                                    if (config.startFromTheFirstFile == true)
+                                    {
+                                        if (filesNumberPerLoop > 0)
+                                        {
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -230,6 +264,8 @@ namespace Utilities
                 }
             }
         }
+        #endregion
+
     }
 
     public class MyFileInfo

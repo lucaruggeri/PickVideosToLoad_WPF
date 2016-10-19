@@ -12,6 +12,7 @@ namespace PickVideosToLoad.Model
         public string sourceFolder { get; set; }
         public string destinationFolder { get; set; }
         public bool moveAndDeleteFromSource { get; set; }
+        public bool startFromTheFirstFile { get; set; }
         public List<string> foldersToIgnore { get; set; }
         public List<string> extensionsToTransfer { get; set; }
         public List<string> extensionsToIgnore { get; set; }
