@@ -10,12 +10,13 @@ namespace Utilities
 {
     public class FilesAndFolders
     {
-        //TODO modalità preleva il primo video sulla cartella (per vedere puntate in ordine)
-
-        public List<MyFileInfo> filesInfoList;
-        public List<MyFileInfo> filesToCopy;
-        public int existingFilesCopies;
-        public int filesNumberPerLoop;
+        public List<string> rootFolders { get; set; }
+        public List<string> rootDiscardedFolders { get; set; }
+        public List<FileInformations> filesInfoList { get; set; }
+        public List<FileInformations> filesToCopy { get; set; }
+        public int existingFilesCopies { get; set; }
+        public int filesNumberPerLoop { get; set; }
+        float totalMegabytes { get; set; }
 
         public FilesAndFolders()
         {
@@ -24,17 +25,33 @@ namespace Utilities
         #region public methods
         public void TransferRandomFiles(FilesTransferConfiguration config)
         {
-            filesInfoList = new List<MyFileInfo>();
-            filesToCopy = new List<MyFileInfo>();
+            filesInfoList = new List<FileInformations>();
+            filesToCopy = new List<FileInformations>();
             existingFilesCopies = 0;
             filesNumberPerLoop = 0;
 
+            if (config.startFromTheFirstFile == true)
+            {
+                FirstRandomFiles(config);
+                TransferFiles(config);
+            }
+            else
+            {
+                RandomFiles(config);
+                TransferFiles(config);
+            }
+        }
+        #endregion
+
+        #region private methods
+        private void RandomFiles(FilesTransferConfiguration config)
+        {
             //save all infos
             SaveFilesInfo(config);
 
             //filter wanted file infos
-            float totalMegabytes = 0;
-            while ((totalMegabytes < config.maxMegabytesAllowed) && (filesInfoList.Count() > 0))
+            totalMegabytes = 0;
+            while ((totalMegabytes < config.maxMBAllowed) && (filesInfoList.Count() > 0))
             {
                 //select random file
                 int index = RandomUtility.GenerateRandomNumber(0, filesInfoList.Count() - 1);
@@ -51,7 +68,119 @@ namespace Utilities
                     filesInfoList.RemoveAt(index);
                 }
             }
+        }
 
+        private float GetFileInfosTotalMB()
+        {
+            return filesInfoList.Sum(x => x.Megabytes);
+        }
+
+        private bool LitimReached(float maxMBAllowed)
+        {
+            if (GetFileInfosTotalMB() >= maxMBAllowed)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsFolderDiscarded(string folder)
+        {
+            return rootDiscardedFolders.Contains(folder);
+        }
+
+        private string GetFirstFileFromFolder(string folder)
+        {
+            return Directory.GetFiles(folder).ToList().FirstOrDefault();
+        }
+
+        private string GetFirstSubFolder(string folder)
+        {
+            return Directory.GetDirectories(folder).ToList().FirstOrDefault();
+        }
+
+        private void FirstRandomFiles(FilesTransferConfiguration config)
+        {
+            //tutte le folder della root
+            rootFolders = Directory.GetDirectories(config.sourceFolder).ToList();
+            rootDiscardedFolders = new List<string>();
+
+
+            int randomIndex;
+            string randomFolder;
+            while (!LitimReached(config.maxMBAllowed))
+            {
+                //prendi una random
+                randomIndex = RandomUtility.GenerateRandomNumber(0, rootFolders.Count() - 1);
+                randomFolder = rootFolders[randomIndex];
+
+                if (!IsFolderDiscarded(randomFolder))
+                {
+                    //root
+                    string firstFile = GetFirstFileFromFolder(randomFolder);
+
+                    //subfolder
+                    if (firstFile == null)
+                    {
+                        firstFile = GetFirstFileFromFolder(GetFirstSubFolder(randomFolder));
+                    }
+
+                    if (firstFile != null)
+                    {
+                        FileInfo f = new FileInfo(firstFile);
+                        long fileLenght = f.Length;
+
+                        filesInfoList.Add(new FileInformations { Name = Path.GetFileName(firstFile), PathAndName = firstFile, Size = fileLenght });
+                        filesNumberPerLoop = filesNumberPerLoop + 1;
+
+                        rootDiscardedFolders.Add(randomFolder);
+                    }
+                }
+
+            }
+
+            //filter wanted file infos
+            totalMegabytes = 0;
+            while ((totalMegabytes < config.maxMBAllowed) && (filesInfoList.Count() > 0))
+            {
+                //select random file
+                int index = RandomUtility.GenerateRandomNumber(0, filesInfoList.Count() - 1);
+
+                if (filesInfoList[index] != null)
+                {
+                    //add to 2
+                    filesToCopy.Add(filesInfoList[index]);
+
+                    //update totalMegabytes
+                    totalMegabytes = totalMegabytes + filesInfoList[index].Megabytes;
+
+                    //remove from 1
+                    filesInfoList.RemoveAt(index);
+                }
+            }
+        }
+
+        private string GetFileExtension(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            string[] fileNameElements = fileName.Split('.');
+
+            //actual last element (ignores the dots ('.') in the file name)
+            int lastEmelentIndex = fileNameElements.Length - 1;
+
+            return fileNameElements[lastEmelentIndex];
+        }
+
+        private string CreateCopyName(string fileName, int index)
+        {
+            return Path.GetFileNameWithoutExtension(fileName) + "_" + existingFilesCopies.ToString() + "." + GetFileExtension(fileName);
+        }
+
+        private void TransferFiles(FilesTransferConfiguration config)
+        {
             //copy files
             if (filesToCopy.Count() > 0)
             {
@@ -86,111 +215,11 @@ namespace Utilities
                 }
             }
         }
-        #endregion
-
-        #region private methods
-        private string GetFileExtension(string fileName)
-        {
-            fileName = Path.GetFileName(fileName);
-            string[] fileNameElements = fileName.Split('.');
-
-            //actual last element (ignores the dots ('.') in the file name)
-            int lastEmelentIndex = fileNameElements.Length - 1;
-
-            return fileNameElements[lastEmelentIndex];
-        }
-
-        private string CreateCopyName(string fileName, int index)
-        {
-            return Path.GetFileNameWithoutExtension(fileName) + "_" + existingFilesCopies.ToString() + "." + GetFileExtension(fileName);
-        }
-
-        private void TransferFiles(FilesTransferConfiguration config)
-        {
-            List<string> rootFiles = Directory.GetFiles(config.sourceFolder).ToList();
-            List<string> folders = Directory.GetDirectories(config.sourceFolder).ToList();
-
-            //TODO - add folders ignore filters
-
-            //root
-            if (rootFiles != null)
-            {
-                if (rootFiles.Count() > 0)
-                {
-                    foreach (string file in rootFiles)
-                    {
-                        //contains extension
-                        if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
-                        {
-                            //doesn't contains extension
-                            if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
-                            {
-                                if (config.moveAndDeleteFromSource)
-                                {
-                                    //move
-                                    File.Move(file, config.destinationFolder + "\\" + Path.GetFileName(file));
-                                }
-                                else
-                                {
-                                    //copy
-                                    File.Copy(file, config.destinationFolder + "\\" + Path.GetFileName(file), true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            //subfolders
-            if (folders != null)
-            {
-                if (folders.Count() > 0)
-                {
-                    foreach (string folder in folders)
-                    {
-                        List<string> files = Directory.GetFiles(folder).ToList();
-
-                        foreach (string file in files)
-                        {
-                            //contains extension
-                            if (config.extensionsToTransfer.Contains(GetFileExtension(file)))
-                            {
-                                //doesn't contains extension
-                                if (!config.extensionsToIgnore.Contains(GetFileExtension(file)))
-                                {
-                                    if (config.moveAndDeleteFromSource)
-                                    {
-                                        //move
-                                        File.Move(file, config.destinationFolder + "\\" + Path.GetFileName(file));
-                                    }
-                                    else
-                                    {
-                                        //copy
-                                        File.Copy(file, config.destinationFolder + "\\" + Path.GetFileName(file), true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         private void SaveFilesInfo(FilesTransferConfiguration config)
         {
             SaveRootInfo(config);
-
-            if (config.startFromTheFirstFile == true)
-            {
-                if (filesNumberPerLoop < 1)
-                {
-                    SaveFoldersInfo(config);
-                }
-            }
-            else
-            {
-                SaveFoldersInfo(config);
-            }
+            SaveFoldersInfo(config);
         }
 
         private void SaveRootInfo(FilesTransferConfiguration config)
@@ -206,17 +235,8 @@ namespace Utilities
                         FileInfo f = new FileInfo(file);
                         long fileLenght = f.Length;
 
-                        filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
+                        filesInfoList.Add(new FileInformations { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
                         filesNumberPerLoop = filesNumberPerLoop + 1;
-
-                        //exits if it must start from the first file
-                        if (config.startFromTheFirstFile == true)
-                        {
-                            if (filesNumberPerLoop > 0)
-                            {
-                                return;
-                            }
-                        }
                     }
                 }
             }
@@ -242,17 +262,8 @@ namespace Utilities
                                     FileInfo f = new FileInfo(file);
                                     long fileLenght = f.Length;
 
-                                    filesInfoList.Add(new MyFileInfo { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
+                                    filesInfoList.Add(new FileInformations { Name = Path.GetFileName(file), PathAndName = file, Size = fileLenght });
                                     filesNumberPerLoop = filesNumberPerLoop + 1;
-
-                                    //exits if it must start from the first file
-                                    if (config.startFromTheFirstFile == true)
-                                    {
-                                        if (filesNumberPerLoop > 0)
-                                        {
-                                            return;
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -268,7 +279,7 @@ namespace Utilities
 
     }
 
-    public class MyFileInfo
+    public class FileInformations
     {
         public string Name { get; set; }
         public long Size { get; set; }

@@ -19,7 +19,7 @@ namespace PickVideosToLoad.Model
         public float gigas { get; set; }
         public float megas { get; set; }
 
-        public float maxMegabytesAllowed {
+        public float maxMBAllowed {
             get { return Convert.ToSingle(this.ConvertGigasToMegas()) + megas; }
         }
 
