@@ -125,7 +125,11 @@ namespace Utilities
                     //subfolder
                     if (firstFile == null)
                     {
-                        firstFile = GetFirstFileFromFolder(GetFirstSubFolder(randomFolder));
+                        string firstSubFolder = GetFirstSubFolder(randomFolder);
+                        if (firstSubFolder != null)
+                        {
+                            firstFile = GetFirstFileFromFolder(firstSubFolder);
+                        }
                     }
 
                     if (firstFile != null)
